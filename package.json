@@ -1,0 +1,35 @@
+{
+  "name": "js_slitherexplorer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint --fix src/*",
+    "watch": "webpack --watch -d",
+    "make": "webpack -p --progress"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "antd": "^3.2.2",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-import": "^1.6.5",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.10",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.9",
+    "jquery": "^1.9.1",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.6",
+    "less-vars-to-js": "^1.2.1",
+    "popper.js": "^1.12.9",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "style-loader": "^0.20.2",
+    "url-loader": "^0.6.2",
+    "webpack": "^3.11.0"
+  }
+}
