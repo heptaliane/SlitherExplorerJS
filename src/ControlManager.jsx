@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Button, Row, Col} from 'antd';
+import {Button, Tooltip, Row, Col} from 'antd';
 
 
 const containerStyle = {
@@ -51,39 +51,53 @@ class ControlManager extends React.PureComponent {
       <div style={containerStyle}>
         <Row>
           <Col span={6}>
-            <Button
-              disabled={this.state.isBegin}
-              icon="arrow-left"
-              onClick={this.handleBack}
-              shape="circle"
-              style={{marginRight: '50px'}}
-              type="primary"
-            />
+            <Tooltip
+              placement="bottom"
+              title="previous step"
+            >
+              <Button
+                disabled={this.state.isBegin}
+                icon="arrow-left"
+                onClick={this.handleBack}
+                shape="circle"
+                style={{marginRight: '50px'}}
+                type="primary"
+              />
+            </Tooltip>
           </Col>
           <Col span={12}>
             {this.state.children}
           </Col>
           <Col span={6}>
-            <Button
-              disabled={this.state.disabled}
-              icon={
+            <Tooltip
+              placement="bottom"
+              title={
                 this.state.isEnd ?
-                  'reload' :
-                  'arrow-right'
+                  'retry' :
+                  'next step'
               }
-              onClick={
-                this.state.isEnd ?
-                  this.handleRetry :
-                  this.handleNext
-              }
-              shape="circle"
-              style={{marginLeft: '50px'}}
-              type={
-                this.state.isEnd ?
-                  'danger' :
-                  'primary'
-              }
-            />
+            >
+              <Button
+                disabled={this.state.disabled}
+                icon={
+                  this.state.isEnd ?
+                    'reload' :
+                    'arrow-right'
+                }
+                onClick={
+                  this.state.isEnd ?
+                    this.handleRetry :
+                    this.handleNext
+                }
+                shape="circle"
+                style={{marginLeft: '50px'}}
+                type={
+                  this.state.isEnd ?
+                    'danger' :
+                    'primary'
+                }
+              />
+            </Tooltip>
           </Col>
         </Row>
       </div>

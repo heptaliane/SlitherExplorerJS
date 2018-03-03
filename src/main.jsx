@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 
-import {Layout, notification} from 'antd';
+import {Layout, notification, message} from 'antd';
 const {Content} = Layout;
 
 import Matrix from './matrix.js';
@@ -120,7 +120,11 @@ class App extends React.PureComponent {
       return true;
     }
 
-    return this.solve.isCompleted();
+    if (this.solve.isCompleted()) {
+      message.success('completed!');
+      return true;
+    }
+    return false;
   }
 
   handleSolve(stepByStep, callback) {
