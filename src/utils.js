@@ -380,6 +380,8 @@ export default class SlitherUtils {
         return i + 1;
       }
     }
+
+    return 0;
   }
 
 }

@@ -1,260 +1,135 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Steps, Button, Checkbox, Icon, Upload} from 'antd';
+import {Radio, Icon, Button} from 'antd';
 
-import ControlManager from './ControlManager.jsx';
-import SizeInput from './SizeInput.jsx';
+import InputSlider from './InputSlider.jsx';
 
-
-const uploadPage = 0;
-const sizePage = 1;
-const cellPage = 2;
-const solvePage = 3;
-
-const steps = [
-  'Choose Data Input Type',
-  'Configure Size',
-  'Input Cell Data',
-  'Solve',
-];
-
-const stepStyle = {
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  marginTop: '16px',
-  marginBottom: '16px',
-  padding: '20px',
-  width: '80%',
-  textAlign: 'left',
+const containerStyle = {
+  margin: '10px',
+  padding: '10px',
+  border: '2px solid lightgray',
+  borderRadius: '5px',
+  backgroundColor: 'white',
+  textAlign: 'center',
 };
 
-class ControlArea extends React.Component {
+const itemStyle = {
+  margin: '10px',
+  padding: '10px',
+};
+
+const availableIndex = [0, 1, 2, 3, 4];
+const stateDelete = 4;
+
+class ControlArea extends React.PureComponent {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      stepByStep: false,
-      step: 0,
-      width: props.defaultValues.width,
-      height: props.defaultValues.height,
-      loading: false,
-      disabled: false,
-    };
+    this.initialCellIdx = props.initialCellIdx;
+    this.cols = props.initialCols;
+    this.rows = props.initialRows;
 
-    this.callbackSize = props.onChange;
-    this.callbackSolve = props.onSolve;
-    this.callbackRetry = props.onRetry;
-    this.callbackForbid = props.onForbidInput;
-    this.callbackUpload = props.onUpload;
-    this.handleChange = this.handleChange.bind(this);
-    this.handleCheck = this.handleCheck.bind(this);
-    this.handleSolve = this.handleSolve.bind(this);
-    this.handleNext = this.handleNext.bind(this);
-    this.handleBack = this.handleBack.bind(this);
-    this.handleRetry = this.handleRetry.bind(this);
-    this.handleUpload = this.handleUpload.bind(this);
+    this.callback = props.onChange;
+    this.handleRadioChange = this.handleRadioChange.bind(this);
+    this.handleRowChange = this.handleRowChange.bind(this);
+    this.handleColumnChange = this.handleColumnChange.bind(this);
+    this.handleModifyClick = this.handleModifyClick.bind(this);
   }
 
-  handleNext() {
-    const newStep = this.state.step + 1;
-
-    if (newStep === cellPage) {
-      this.callbackForbid(false);
-      this.callbackSize({
-        width: this.state.width,
-        height: this.state.height,
-      });
-    } else if (newStep === solvePage) {
-      this.callbackForbid(true);
-    }
-
-    this.setState({step: newStep});
-  }
-
-  handleBack() {
-    const newStep = this.state.step - 1;
-
-    if (newStep === sizePage) {
-      this.callbackForbid(true);
-    } else if (newStep === cellPage) {
-      this.callbackForbid(false);
-    }
-
-    this.setState({step: newStep});
-  }
-
-  handleRetry() {
-    this.setState({step: 0});
-    this.callbackRetry();
-  }
-
-  handleChange(args) {
-    this.setState({
-      width: args.width,
-      height: args.height,
+  handleRadioChange({target}) {
+    this.callback({
+      radio: target.value,
     });
   }
 
-  handleCheck() {
-    this.setState({stepByStep: !this.state.stepByStep});
+  handleRowChange(value) {
+    this.rows = value;
   }
 
-  handleSolve() {
-    this.setState({loading: true});
-
-    this.callbackSolve(this.state.stepByStep, () => {
-      this.setState({loading: false});
-    });
+  handleColumnChange(value) {
+    this.cols = value;
   }
 
-  handleUpload(info) {
-    this.setState({disabled: true});
-    this.callbackUpload(info, ({width, height}) => {
-      this.setState({
-        step: solvePage,
-        width: width,
-        height: height,
-        disabled: false,
-      });
-    }, () => {
-      this.setState({disabled: false});
+  handleModifyClick() {
+    this.callback({
+      rows: this.rows,
+      cols: this.cols,
     });
   }
 
   render() {
     return (
-      <div style={{textAlign: 'center'}}>
-        <Steps
-          current={this.state.step}
-          style={stepStyle}
-        >
-          {steps.map((title) => {
-            return (
-              <Steps.Step
-                key={title}
-                title={title}
-              />
-            );
-          })}
-        </Steps>
-        <ControlManager
-          disabled={this.state.disabled}
-          isBegin={this.state.step === 0}
-          isEnd={this.state.step === steps.length - 1}
-          onBack={this.handleBack}
-          onNext={this.handleNext}
-          onRetry={this.handleRetry}
-          onUpload={this.handleUpload}
-        >
-          {
-            this.state.step === uploadPage &&
-            <div>
-              <p>
-upload csv file or press next button
-              </p>
-              <Upload
-                action="https://jsonplaceholder.typicode.com/posts/"
-                onChange={this.handleUpload}
-                style={{margin: '16px'}}
-              >
-                <Button
-                  icon="upload"
-                  type="primary"
+      <div>
+        <div style={containerStyle}>
+          <Radio.Group
+            buttonStyle="solid"
+            defaultValue={this.initialCellIdx}
+            onChange={this.handleRadioChange}
+          >
+            {availableIndex.map((idx) => {
+              return (
+                <Radio.Button
+                  value={idx}
+                  key={`radio-${idx}`}
                 >
-                  upload
-                </Button>
-              </Upload>
-            </div>
-          }
-          {
-            this.state.step === sizePage &&
-            <SizeInput
-              cols={this.state.width}
-              onChange={this.handleChange}
-              rows={this.state.height}
+                  {
+                    idx === stateDelete ?
+                    <Icon type="delete" />:
+                    idx
+                  }
+                </Radio.Button>
+              );
+            })}
+          </Radio.Group>
+        </div>
+        <div style={containerStyle}>
+          <div style={itemStyle}>
+            <InputSlider
+              max={30}
+              min={2}
+              tics={1}
+              initialValue={this.rows}
+              label="rows"
+              onChange={this.handleRowChange}
             />
-          }
-          {
-            this.state.step === cellPage &&
-            <div>
-              <p style={{margin: '16px'}}>
-                Input cell data below
-              </p>
-              <Icon
-                type="arrow-down"
-              />
-            </div>
-          }
-          {
-            this.state.step === solvePage &&
-            <div>
-              <div style={{margin: '16px'}}>
-                <Checkbox
-                  checked={this.state.stepByStep}
-                  onChange={this.handleCheck}
-                >
-                  use step-by-step solution
-                </Checkbox>
-              </div>
-              <Button
-                icon={
-                  this.state.stepByStep ?
-                    'step-forward' :
-                    'bulb'
-                }
-                loading={this.state.loading}
-                onClick={this.handleSolve}
-                type="primary"
-              >
-                {
-                  this.state.stepByStep ?
-                    'next step' :
-                    'solve'
-                }
-              </Button>
-            </div>
-          }
-        </ControlManager>
+          </div>
+          <div style={itemStyle}>
+            <InputSlider
+              max={30}
+              min={2}
+              tics={1}
+              initialValue={this.cols}
+              label="cols"
+              onChange={this.handleColumnChange}
+            />
+          </div>
+          <Button
+            type="primary"
+            icon="reload"
+            onClick={this.handleModifyClick}
+          >
+            Modify
+          </Button>
+        </div>
       </div>
     );
   }
-
-}
+};
 
 ControlArea.propTypes = {
-  defaultValues: PropTypes.shape({
-    height: PropTypes.number,
-    width: PropTypes.number,
-  }),
+  initialCellIdx: PropTypes.oneOf(availableIndex),
+  initialCols: PropTypes.number,
+  initialRows: PropTypes.number,
   onChange: PropTypes.func,
-  onForbidInput: PropTypes.func,
-  onRetry: PropTypes.func,
-  onSolve: PropTypes.func,
-  onUpload: PropTypes.func,
 };
 
 ControlArea.defaultProps = {
-  defaultValues: {
-    height: 1,
-    width: 1,
-  },
-  onChange: (args) => {
-    console.log(args);
-  },
-  onForbidInput: (args) => {
-    console.log(args);
-  },
-  onRetry: (args) => {
-    console.log(args);
-  },
-  onSolve: (args) => {
-    console.log(args);
-  },
-  onUpload: (args) => {
-    console.log(args);
-  },
+  initialCellIdx: 4,
+  initialCols: 7,
+  initialRows: 7,
+  onChange: (args) => console.log(args),
 };
 
 export default ControlArea;
