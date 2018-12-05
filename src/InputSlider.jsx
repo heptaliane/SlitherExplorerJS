@@ -65,14 +65,15 @@ class InputSlider extends React.Component {
       </div>
     );
   }
-};
+
+}
 
 InputSlider.propTypes = {
   initialValue: PropTypes.number,
+  label: PropTypes.string,
   max: PropTypes.number,
   min: PropTypes.number,
   tics: PropTypes.number,
-  label: PropTypes.string,
   onChange: PropTypes.func,
 };
 
@@ -82,7 +83,9 @@ InputSlider.defaultProps = {
   min: 0,
   tics: 1,
   label: '',
-  onChange: (args) => console.log(args),
+  onChange: (args) => {
+    return console.log(args);
+  },
 };
 
 export default InputSlider;

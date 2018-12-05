@@ -19,7 +19,13 @@ const itemStyle = {
   padding: '10px',
 };
 
-const availableIndex = [0, 1, 2, 3, 4];
+const availableIndex = [
+  0,
+  1,
+  2,
+  3,
+  4,
+];
 const stateDelete = 4;
 
 class ControlArea extends React.PureComponent {
@@ -76,8 +82,8 @@ class ControlArea extends React.PureComponent {
                 >
                   {
                     idx === stateDelete ?
-                    <Icon type="delete" />:
-                    idx
+                      <Icon type="delete" /> :
+                      idx
                   }
                 </Radio.Button>
               );
@@ -116,7 +122,8 @@ class ControlArea extends React.PureComponent {
       </div>
     );
   }
-};
+
+}
 
 ControlArea.propTypes = {
   initialCellIdx: PropTypes.oneOf(availableIndex),
@@ -129,7 +136,9 @@ ControlArea.defaultProps = {
   initialCellIdx: 4,
   initialCols: 7,
   initialRows: 7,
-  onChange: (args) => console.log(args),
+  onChange: (args) => {
+    return console.log(args);
+  },
 };
 
 export default ControlArea;

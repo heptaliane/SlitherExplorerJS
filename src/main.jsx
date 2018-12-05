@@ -13,11 +13,13 @@ import MainView from './MainView.jsx';
 const cellDefault = 4;
 
 class App extends React.PureComponent {
+
   render() {
     return (
       <MainView />
     );
   }
+
 }
 
 

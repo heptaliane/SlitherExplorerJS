@@ -21,13 +21,20 @@ const containerStyle = {
   textAlign: 'center',
 };
 
+const itemStyle = {
+  padding: '10px',
+  border: 'thick double lightgray',
+  borderRadius: '10px',
+};
+
 
 class MainView extends React.Component {
+
   constructor(props) {
     super(props);
 
     this.controlValue = defaultControlValue;
-    this.state ={
+    this.state = {
       cell: new Matrix({
         height: defaultRows,
         width: defaultCols,
@@ -46,7 +53,7 @@ class MainView extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleCellChange = this.handleCellChange.bind(this);
+    this.handleCellClick = this.handleCellClick.bind(this);
   }
 
   handleChange({radio, cols, rows}) {
@@ -74,28 +81,40 @@ class MainView extends React.Component {
     }
   }
 
-  handleCellChange({row, col}) {
-    this.cell.set(row, col, this.controlValue);
+  handleCellClick({row, col}) {
+    const newCell = new Matrix(this.state.cell);
+    if (this.state.cell.get(row, col) === this.controlValue) {
+      newCell.set(row, col, defaultCellValue);
+    } else{
+      newCell.set(row, col, this.controlValue);
+    }
+
+    this.setState({cell: newCell});
   }
 
   render() {
     return (
       <div style={containerStyle}>
-        <ControlArea
-          initialCellIdx={this.controlValue}
-          initialCols={defaultCols}
-          initialRows={defaultRows}
-          onChange={this.handleChange}
-        />
-        <GridCanvas
-          cell={this.state.cell}
-          row={this.state.row}
-          col={this.state.col}
-          onChange={this.handleCellChange}
-        />
+        <div style={itemStyle}>
+          <ControlArea
+            initialCellIdx={this.controlValue}
+            initialCols={defaultCols}
+            initialRows={defaultRows}
+            onChange={this.handleChange}
+          />
+        </div>
+        <div style={itemStyle}>
+          <GridCanvas
+            cell={this.state.cell}
+            row={this.state.row}
+            col={this.state.col}
+            onClick={this.handleCellClick}
+          />
+        </div>
       </div>
     );
   }
-};
+
+}
 
 export default MainView;

@@ -9,7 +9,17 @@ import SlitherUtils from './utils.js';
 const defaultCellValue = 4;
 const defaultGridValue = 2;
 const LEFT_BUTTON_CLICKED = 0;
-const GridDrawRatio = [0, 0.4, 0.6, 1.0];
+const GridDrawRatio = [
+  0,
+  0.4,
+  0.6,
+  1.0,
+];
+const wrapperStyle = {
+  margin: 'auto',
+  padding: '10px',
+  height: '100%',
+};
 
 const getRectCoord = function(idx, size) {
   const xidx = idx % 3;
@@ -28,7 +38,15 @@ const drawRow = function(ctx, value, xidx, yidx, cellSize, vertexSize) {
   const yoffset = (cellSize + vertexSize) * yidx;
 
   fore.row[value].forEach((idx) => {
-    const [x, y, w, h] = getRectCoord(idx, [cellSize, vertexSize]);
+    const [
+      x,
+      y,
+      w,
+      h,
+    ] = getRectCoord(idx, [
+      cellSize,
+      vertexSize,
+    ]);
     ctx.fillRect(xoffset + x, yoffset + y, w, h);
   });
 };
@@ -38,7 +56,15 @@ const drawCol = function(ctx, value, xidx, yidx, cellSize, vertexSize) {
   const yoffset = (cellSize + vertexSize) * yidx + vertexSize;
 
   fore.col[value].forEach((idx) => {
-    const [x, y, w, h] = getRectCoord(idx, [vertexSize, cellSize]);
+    const [
+      x,
+      y,
+      w,
+      h,
+    ] = getRectCoord(idx, [
+      vertexSize,
+      cellSize,
+    ]);
     ctx.fillRect(xoffset + x, yoffset + y, w, h);
   });
 };
@@ -48,7 +74,15 @@ const drawVertex = function(ctx, value, xidx, yidx, cellSize, vertexSize) {
   const yoffset = (cellSize + vertexSize) * yidx;
 
   fore.vertex[value].forEach((idx) => {
-    const [x, y, w, h] = getRectCoord(idx, [vertexSize, vertexSize]);
+    const [
+      x,
+      y,
+      w,
+      h,
+    ] = getRectCoord(idx, [
+      vertexSize,
+      vertexSize,
+    ]);
     ctx.fillRect(xoffset + x, yoffset + y, w, h);
   });
 };
@@ -101,6 +135,7 @@ class GridCanvas extends React.Component {
       width: cw * (this.cellSize + this.vertexSize) + this.vertexSize,
       height: ch * (this.cellSize + this.vertexSize) + this.vertexSize,
     });
+    this.drawGridOnCanvas();
   }
 
   componentDidMount() {
@@ -112,10 +147,8 @@ class GridCanvas extends React.Component {
   }
 
   shouldComponentUpdate(newProps, newState) {
-    this.drawGridOnCanvas();
-
     return (
-      this.state.width !== newState.width &&
+      this.state.width !== newState.width ||
       this.state.height !== newState.height
     );
   }
@@ -157,47 +190,64 @@ class GridCanvas extends React.Component {
     for (let xidx = 0; xidx < cols + 1; xidx += 1) {
       for (let yidx = 0; yidx < rows + 1; yidx += 1) {
         if (xidx !== cols && yidx !== rows) {
-          drawCell(ctx, this.cell.get(yidx, xidx, defaultCellValue),
-                   xidx, yidx, this.cellSize, this.vertexSize);
+          drawCell(
+            ctx, this.cell.get(yidx, xidx, defaultCellValue),
+            xidx, yidx, this.cellSize, this.vertexSize
+          );
         }
         if (yidx !== rows) {
-          drawCol(ctx, this.col.get(yidx, xidx, defaultGridValue),
-                  xidx, yidx, this.cellSize, this.vertexSize);
+          drawCol(
+            ctx, this.col.get(yidx, xidx, defaultGridValue),
+            xidx, yidx, this.cellSize, this.vertexSize
+          );
         }
         if (xidx !== cols) {
-          drawRow(ctx, this.row.get(yidx, xidx, defaultGridValue),
-                  xidx, yidx, this.cellSize, this.vertexSize);
+          drawRow(
+            ctx, this.row.get(yidx, xidx, defaultGridValue),
+            xidx, yidx, this.cellSize, this.vertexSize
+          );
         }
 
-        const vertex = SlitherUtils.getVertex(this.row, this.col,
-                                              [yidx, xidx]);
-        drawVertex(ctx, vertex,
-                   xidx, yidx, this.cellSize, this.vertexSize);
+        const vertex = SlitherUtils.getVertex(
+          this.row, this.col,
+          [
+            yidx,
+            xidx,
+          ]
+        );
+        drawVertex(
+          ctx, vertex,
+          xidx, yidx, this.cellSize, this.vertexSize
+        );
       }
     }
   }
 
   render() {
     return (
-      <canvas
-        style={{
-          width: this.state.width,
-          height: this.state.height,
-        }}
-        ref={this.referenceCanvas}
-        onMouseUp={this.handleMouseUp}
-      />
+      <div style={wrapperStyle}>
+        <canvas
+          style={{
+            width: this.state.width,
+            height: this.state.height,
+            cursor: 'pointer',
+          }}
+          ref={this.referenceCanvas}
+          onMouseUp={this.handleMouseUp}
+        />
+      </div>
     );
   }
+
 }
 
 GridCanvas.propTypes = {
   cell: PropTypes.instanceOf(Matrix),
-  col: PropTypes.instanceOf(Matrix),
-  row: PropTypes.instanceOf(Matrix),
   cellSize: PropTypes.number,
-  vertexSize: PropTypes.number,
+  col: PropTypes.instanceOf(Matrix),
   color: PropTypes.string,
+  row: PropTypes.instanceOf(Matrix),
+  vertexSize: PropTypes.number,
   onClick: PropTypes.func,
 };
 
@@ -220,7 +270,9 @@ GridCanvas.defaultProps = {
   cellSize: 30,
   vertexSize: 15,
   color: '#000',
-  onClick: (args) => console.log(args)
+  onClick: (args) => {
+    return console.log(args);
+  },
 };
 
 export default GridCanvas;
