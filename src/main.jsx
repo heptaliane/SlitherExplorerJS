@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 
-import {Layout, notification, message} from 'antd';
+import {Layout} from 'antd';
 const {Content} = Layout;
 
 import Matrix from './matrix.js';

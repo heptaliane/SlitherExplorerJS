@@ -1,11 +1,11 @@
 {
   "name": "js_slitherexplorer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "eslint --fix src/*",
-    "watch": "webpack --watch -d",
+    "watch": "webpack --watch",
     "make": "webpack -p --progress"
   },
   "author": "",

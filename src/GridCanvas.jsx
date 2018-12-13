@@ -16,9 +16,11 @@ const GridDrawRatio = [
   1.0,
 ];
 const wrapperStyle = {
+  border: 'solid 2px lightgray',
+  borderRadius: '10px',
+  display: 'inline-block',
   margin: 'auto',
-  padding: '10px',
-  height: '100%',
+  padding: '20px',
 };
 
 const getRectCoord = function(idx, size) {
@@ -92,7 +94,7 @@ const drawCell = function(ctx, value, xidx, yidx, cellSize, vertexSize) {
   const yoffset = (cellSize + vertexSize) * yidx + vertexSize;
 
   if (value >= 0 && value < 4) {
-    ctx.fillText(value, xoffset + 0.4 * cellSize, yoffset);
+    ctx.fillText(value, xoffset + 0.3 * cellSize, yoffset);
   }
 };
 
@@ -115,6 +117,7 @@ class GridCanvas extends React.Component {
     this.cellSize = props.cellSize;
     this.vertexSize = props.vertexSize;
     this.color = props.color;
+    this.backgroundColor = props.backgroundColor;
 
     this.callback = props.onClick;
     this.handleMouseUp = this.handleMouseUp.bind(this);
@@ -128,6 +131,7 @@ class GridCanvas extends React.Component {
     this.cellSize = newProps.cellSize;
     this.vertexSize = newProps.vertexSize;
     this.color = newProps.color;
+    this.backgroundColor = newProps.backgroundColor;
 
     const cw = newProps.cell.getWidth();
     const ch = newProps.cell.getHeight();
@@ -180,6 +184,9 @@ class GridCanvas extends React.Component {
     this.canvas.height = this.state.height;
 
     const ctx = this.canvas.getContext('2d');
+    ctx.fillStyle = this.backgroundColor;
+    ctx.fillRect(0, 0, this.state.width, this.state.height);
+
     ctx.fillStyle = this.color;
     ctx.textBaseline = 'top';
     ctx.font = `${this.cellSize}px serif`;
@@ -242,6 +249,7 @@ class GridCanvas extends React.Component {
 }
 
 GridCanvas.propTypes = {
+  backgroundColor: PropTypes.string,
   cell: PropTypes.instanceOf(Matrix),
   cellSize: PropTypes.number,
   col: PropTypes.instanceOf(Matrix),
@@ -270,6 +278,7 @@ GridCanvas.defaultProps = {
   cellSize: 30,
   vertexSize: 15,
   color: '#000',
+  backgroundColor: '#fff',
   onClick: (args) => {
     return console.log(args);
   },
