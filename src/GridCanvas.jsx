@@ -116,8 +116,8 @@ class GridCanvas extends React.Component {
     this.col = props.col;
     this.cellSize = props.cellSize;
     this.vertexSize = props.vertexSize;
-    this.color = props.color;
-    this.backgroundColor = props.backgroundColor;
+    this.fore = props.fore;
+    this.back = props.back;
 
     this.callback = props.onClick;
     this.handleMouseUp = this.handleMouseUp.bind(this);
@@ -130,8 +130,8 @@ class GridCanvas extends React.Component {
     this.col = newProps.col;
     this.cellSize = newProps.cellSize;
     this.vertexSize = newProps.vertexSize;
-    this.color = newProps.color;
-    this.backgroundColor = newProps.backgroundColor;
+    this.fore = newProps.fore;
+    this.back = newProps.back;
 
     const cw = newProps.cell.getWidth();
     const ch = newProps.cell.getHeight();
@@ -184,10 +184,10 @@ class GridCanvas extends React.Component {
     this.canvas.height = this.state.height;
 
     const ctx = this.canvas.getContext('2d');
-    ctx.fillStyle = this.backgroundColor;
+    ctx.fillStyle = this.back;
     ctx.fillRect(0, 0, this.state.width, this.state.height);
 
-    ctx.fillStyle = this.color;
+    ctx.fillStyle = this.fore;
     ctx.textBaseline = 'top';
     ctx.font = `${this.cellSize}px serif`;
 
@@ -249,11 +249,11 @@ class GridCanvas extends React.Component {
 }
 
 GridCanvas.propTypes = {
-  backgroundColor: PropTypes.string,
+  back: PropTypes.string,
   cell: PropTypes.instanceOf(Matrix),
   cellSize: PropTypes.number,
   col: PropTypes.instanceOf(Matrix),
-  color: PropTypes.string,
+  fore: PropTypes.string,
   row: PropTypes.instanceOf(Matrix),
   vertexSize: PropTypes.number,
   onClick: PropTypes.func,
@@ -277,8 +277,8 @@ GridCanvas.defaultProps = {
   }),
   cellSize: 30,
   vertexSize: 15,
-  color: '#000',
-  backgroundColor: '#fff',
+  fore: '#000',
+  back: '#fff',
   onClick: (args) => {
     return console.log(args);
   },

@@ -24,6 +24,12 @@ const StatusBar = function(props) {
       <div>
         {`field height: ${props.height}`}
       </div>
+      {
+        props.loop !== undefined &&
+        <div>
+          {`loop: ${props.loop}`}
+        </div>
+      }
     </Header>
   );
 };
@@ -38,6 +44,14 @@ StatusBar.propTypes = {
     4,
   ]).isRequired,
   width: PropTypes.number.isRequired,
+  loop: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.oneOf([undefined]),
+  ]),
+};
+
+StatusBar.defaultProps = {
+  loop: undefined,
 };
 
 export default StatusBar;

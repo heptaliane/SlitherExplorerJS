@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Radio, Icon, Button, Popconfirm} from 'antd';
+import {Radio, Icon, Input, Button, Popconfirm} from 'antd';
 
 import InputSlider from './InputSlider.jsx';
 
@@ -19,8 +19,23 @@ const itemStyle = {
   padding: '10px',
 };
 
+const colorStyle = Object.assign(
+  {},
+  itemStyle,
+  {
+    display: 'grid',
+    gridGap: '20px',
+    gridTemplateColumns: '2fr 2fr 1fr',
+  }
+);
+
 const btnStyle = {
   marginTop: '10px',
+};
+
+const paletteStyle = {
+  border: 'dashed 2px lightgray',
+  borderRadius: '100%',
 };
 
 const availableIndex = [
@@ -31,19 +46,18 @@ const availableIndex = [
   4,
 ];
 const keyLeft = [
-  'a',
   'h',
   '-',
   'ArrowLeft',
 ];
 const keyRight = [
-  'd',
   'l',
   '+',
   'ArrowRight',
 ];
 const stateDelete = 4;
 const not_found = -1;
+const maxLength = 6;
 
 class ControlArea extends React.PureComponent {
 
@@ -52,6 +66,8 @@ class ControlArea extends React.PureComponent {
 
     this.state = {
       value: props.initialCellIdx,
+      fore: props.initialFore,
+      back: props.initialBack,
     };
 
     this.cols = props.initialCols;
@@ -65,7 +81,7 @@ class ControlArea extends React.PureComponent {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSaveCanvas = this.handleSaveCanvas.bind(this);
-    this.handleClean = this.handleClean.bind(this);
+    this.handleColor = this.handleColor.bind(this);
 
     window.document.addEventListener('keydown', this.handleKeyDown);
   }
@@ -100,17 +116,22 @@ class ControlArea extends React.PureComponent {
     });
   }
 
+  handleColor({target}) {
+    if (target.value.length <= maxLength && (/^[0-9a-f]*$/).test(target.value)) {
+      this.setState({
+        [target.name]: target.value,
+      });
+      this.callback({
+        [target.name]: target.value,
+      });
+    }
+  }
+
   handleSaveCanvas() {
     const canvas = document.getElementsByTagName('canvas')[0];
     const result = canvas.toDataURL('image/png').
       replace('image/png', 'image/octet-stream');
     window.location.href = result;
-  }
-
-  handleClean() {
-    this.callback({
-      clean: true,
-    });
   }
 
   handleKeyDown({key}) {
@@ -191,6 +212,43 @@ Field size
           </Button>
         </div>
         <div style={containerStyle}>
+          <h3>
+            Color
+          </h3>
+          <div style={colorStyle}>
+            <div>
+foreground color
+            </div>
+            <Input
+              addonBefore="#"
+              value={this.state.fore}
+              name="fore"
+              onChange={this.handleColor}
+            />
+            <div
+              style={Object.assign({
+                backgroundColor: `#${this.state.fore}`,
+              }, paletteStyle)}
+            />
+          </div>
+          <div style={colorStyle}>
+            <div>
+background color
+            </div>
+            <Input
+              addonBefore="#"
+              value={this.state.back}
+              name="back"
+              onChange={this.handleColor}
+            />
+            <div
+              style={Object.assign({
+                backgroundColor: `#${this.state.back}`,
+              }, paletteStyle)}
+            />
+          </div>
+        </div>
+        <div style={containerStyle}>
           <Button
             style={btnStyle}
             block={true}
@@ -211,7 +269,7 @@ Field size
           <Popconfirm
             title="Are you sure to clear all cell?"
             placement="top"
-            onConfirm={this.handleClean}
+            onConfirm={this.handleModifyClick}
           >
             <Button
               style={btnStyle}
@@ -230,8 +288,10 @@ Field size
 }
 
 ControlArea.propTypes = {
+  initialBack: PropTypes.string,
   initialCellIdx: PropTypes.oneOf(availableIndex),
   initialCols: PropTypes.number,
+  initialFore: PropTypes.string,
   initialRows: PropTypes.number,
   onChange: PropTypes.func,
 };
@@ -240,6 +300,8 @@ ControlArea.defaultProps = {
   initialCellIdx: 4,
   initialCols: 7,
   initialRows: 7,
+  initialFore: '000',
+  initialBack: 'fff',
   onChange: (args) => {
     return console.log(args);
   },

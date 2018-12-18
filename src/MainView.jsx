@@ -13,9 +13,11 @@ const {Content} = Layout;
 
 const defaultCellValue = 4;
 const defaultGridValue = 2;
-const defaultRows = 5;
-const defaultCols = 5;
+const defaultRows = 7;
+const defaultCols = 7;
 const defaultControlValue = 0;
+const defaultFore = '000';
+const defaultBack = 'fff';
 
 
 const containerStyle = {
@@ -55,6 +57,9 @@ class MainView extends React.Component {
         width: defaultCols + 1,
         init: defaultGridValue,
       }),
+      back: defaultBack,
+      fore: defaultFore,
+      loop: undefined,
     };
 
     this.applyDefinite = this.applyDefinite.bind(this);
@@ -63,7 +68,7 @@ class MainView extends React.Component {
     this.handleCellClick = this.handleCellClick.bind(this);
   }
 
-  handleChange({radio, cols, rows, submit, clean}) {
+  handleChange({radio, cols, rows, submit, fore, back}) {
     if (radio !== undefined) {
       this.setState({
         controlValue: radio,
@@ -88,40 +93,29 @@ class MainView extends React.Component {
           init: defaultGridValue,
         }),
       });
+      this.setState({loop: undefined});
+    }
+
+    if (back !== undefined) {
+      this.setState({back: back});
+    }
+    if (fore !== undefined) {
+      this.setState({fore: fore});
     }
 
     if (submit === true) {
       this.applyDefinite();
-      for (;;) {
+      for (let idx = 0; ; idx += 1) {
         if (this.setNextStep()) {
           break;
         }
+        this.setState({loop: idx});
       }
 
       const idx = this.solve.store.length - 1;
       this.setState({
         row: this.solve.store[idx].rgrid,
         col: this.solve.store[idx].cgrid,
-      });
-    }
-
-    if (clean === true) {
-      this.setState({
-        cell: new Matrix({
-          height: this.state.cell.getHeight(),
-          width: this.state.cell.getWidth(),
-          init: defaultCellValue,
-        }),
-        row: new Matrix({
-          height: this.state.cell.getHeight() + 1,
-          width: this.state.cell.getWidth(),
-          init: defaultGridValue,
-        }),
-        cell: new Matrix({
-          height: this.state.cell.getHeight(),
-          width: this.state.cell.getWidth() + 1,
-          init: defaultGridValue,
-        }),
       });
     }
   }
@@ -187,6 +181,7 @@ class MainView extends React.Component {
           width={this.state.cell.getWidth()}
           height={this.state.cell.getHeight()}
           input={this.state.controlValue}
+          loop={this.state.loop}
         />
         <Content style={containerStyle}>
           <div style={itemStyle}>
@@ -194,14 +189,18 @@ class MainView extends React.Component {
               initialCellIdx={this.state.controlValue}
               initialCols={defaultCols}
               initialRows={defaultRows}
+              initialFore={this.state.fore}
+              initialBack={this.state.back}
               onChange={this.handleChange}
             />
           </div>
           <div style={itemStyle}>
             <GridCanvas
+              back={`#${this.state.back}`}
               cell={this.state.cell}
-              row={this.state.row}
               col={this.state.col}
+              fore={`#${this.state.fore}`}
+              row={this.state.row}
               onClick={this.handleCellClick}
             />
           </div>
